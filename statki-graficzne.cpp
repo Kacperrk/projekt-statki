@@ -5,10 +5,9 @@
 #include <ctime>
 #include <iostream>
 #include <time.h>
-//#include <Windows.h>
+#include <Windows.h>
 
 using namespace std;
-using namespace sf;
 
 
 //STALE OPISUJACE ROZMIAR INICJOWANEGO OKNA
@@ -33,6 +32,8 @@ public:
 
 	bool FORBIDDEN_FIELDS[BOARD_SIZE][BOARD_SIZE];// TA MACIERZ PRZECHOWUJE INFORMACJE O POLACH ZAKAZANYCH DO KLIKNIECIA
 
+	bool IF_CLICKED[BOARD_SIZE][BOARD_SIZE];
+
 	/*
 	int POINT_OF_X[10][10];//MACIERZ ZAIWERAJACA WSPOLRZEDNE X-OWE KAZDEJ Z KOMOREK
 
@@ -43,9 +44,16 @@ public:
 
 	int SINGLE, DOUBLE, TRIPLE, QUADRA;//TYPY STATKOW
 
+	bool CONTINUE;
+
 
 
 	sf::RectangleShape MATRIX[BOARD_SIZE][BOARD_SIZE];//UTWORZENIE 100 OBIEKTOW TYPU KWADRAT
+
+	sf::RectangleShape REROLL;
+
+	sf::RectangleShape START_BUTTON;
+
 
 	//INICJALIZACJA PLANSZY(MIEJSCA) W DANYM MIEJSCU NA EKRANIE//kontruktor
 	BOARD(int x, int y)
@@ -57,6 +65,7 @@ public:
 	//FUNKCJA USTAWIAJACA WARTOSCI KAZDEJ Z KOMOREK NA 0 , CZYLI NIE KLIKANO ZADNEJ Z NICH
 	void Reset_Board()
 	{
+		CONTINUE = false;
 		int i, j;
 		for (i = 0; i < BOARD_SIZE; i++)
 		{
@@ -64,6 +73,9 @@ public:
 			{
 				BOARD_OF_BOOLS[i][j] = false;
 				FORBIDDEN_FIELDS[i][j] = false;
+				IF_CLICKED[i][j] = false;
+				MATRIX[i][j].setFillColor(sf::Color::White);
+				Reset_Ships();
 			}
 		}
 	}
@@ -95,7 +107,7 @@ public:
 				//POINT_OF_Y[i][j] = (j+1) * CELL_SIDE;
 				MATRIX[i][j].setSize(sf::Vector2f(CELL_SIDE, CELL_SIDE));
 				MATRIX[i][j].setFillColor(sf::Color::White);
-				MATRIX[i][j].setOutlineThickness(4);
+				MATRIX[i][j].setOutlineThickness(1);
 				MATRIX[i][j].setOutlineColor(sf::Color::Black);
 				//PONIZEJ USTAWIANA JEST POZYCJA KAZDEJ Z KOMOREK CZYT. NP DLA I = 0  I+1 = 1 , 1*50 + 100(JEZELI PODANMY 100 JAKO X POCZATKU)
 				//														KWADRAT RYSUJE SIE POPRAWNIE PONIEWAZ WCZESNIEJ ZADEKLAROWALISMY JEGO ROZMIAR
@@ -256,13 +268,21 @@ public:
 				{
 					if (i + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 1][j] = true;
-						MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 1][j])
+						{
+							FORBIDDEN_FIELDS[i + 1][j] = true;
+							MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (i - 4 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 4][j] = true;
-						MATRIX[i - 4][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 4][j])
+						{
+							FORBIDDEN_FIELDS[i - 4][j] = true;
+							MATRIX[i - 4][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 				}
@@ -274,13 +294,21 @@ public:
 				{
 					if (i - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 1][j] = true;
-						MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 1][j])
+						{
+							FORBIDDEN_FIELDS[i - 1][j] = true;
+							MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (i + 4 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 4][j] = true;
-						MATRIX[i + 4][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i + 4][j])
+						{
+							FORBIDDEN_FIELDS[i + 4][j] = true;
+							MATRIX[i + 4][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -293,13 +321,21 @@ public:
 				{
 					if (j + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 1] = true;
-						MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j+1])
+						{
+							FORBIDDEN_FIELDS[i][j + 1] = true;
+							MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (j - 4 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 4] = true;
-						MATRIX[i][j - 4].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j - 4])
+						{
+							FORBIDDEN_FIELDS[i][j - 4] = true;
+							MATRIX[i][j - 4].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -313,13 +349,21 @@ public:
 				{
 					if (j - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 1] = true;
-						MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j - 1])
+						{
+							FORBIDDEN_FIELDS[i][j - 1] = true;
+							MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (j + 4 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 4] = true;
-						MATRIX[i][j + 4].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j + 4])
+						{
+							FORBIDDEN_FIELDS[i][j + 4] = true;
+							MATRIX[i][j + 4].setFillColor(sf::Color::Red);
+						}
+
 					}
 				}
 
@@ -340,14 +384,23 @@ public:
 				{
 					if (i + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 1][j] = true;
-						MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i + 1][j])
+						{
+							FORBIDDEN_FIELDS[i + 1][j] = true;
+							MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						}
+
+
 					}
 
 					if (i - 3 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 3][j] = true;
-						MATRIX[i - 3][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 3][j])
+						{
+							FORBIDDEN_FIELDS[i - 3][j] = true;
+							MATRIX[i - 3][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -361,13 +414,21 @@ public:
 				{
 					if (i - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 1][j] = true;
-						MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i-1][j])
+						{
+							FORBIDDEN_FIELDS[i - 1][j] = true;
+							MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (i + 3 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 3][j] = true;
-						MATRIX[i + 3][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i + 3][j])
+						{
+							FORBIDDEN_FIELDS[i + 3][j] = true;
+							MATRIX[i + 3][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -381,13 +442,21 @@ public:
 				{
 					if (j + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 1] = true;
-						MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j+1])
+						{
+							FORBIDDEN_FIELDS[i][j + 1] = true;
+							MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (j - 3 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 3] = true;
-						MATRIX[i][j - 3].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j-3])
+						{
+							FORBIDDEN_FIELDS[i][j - 3] = true;
+							MATRIX[i][j - 3].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -401,13 +470,21 @@ public:
 				{
 					if (j - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 1] = true;
-						MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j - 1])
+						{
+							FORBIDDEN_FIELDS[i][j - 1] = true;
+							MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 					if (j + 3 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 3] = true;
-						MATRIX[i][j + 3].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j + 3])
+						{
+							FORBIDDEN_FIELDS[i][j + 3] = true;
+							MATRIX[i][j + 3].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 				}
@@ -426,14 +503,22 @@ public:
 				{
 					if (i + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 1][j] = true;
-						MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i + 1][j])
+						{
+							FORBIDDEN_FIELDS[i + 1][j] = true;
+							MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 					if (i - 2 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 2][j] = true;
-						MATRIX[i - 4][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 2][j])
+						{
+							FORBIDDEN_FIELDS[i - 2][j] = true;
+							MATRIX[i - 2][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -447,14 +532,22 @@ public:
 				{
 					if (i - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i - 1][j] = true;
-						MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i - 1][j])
+						{
+							FORBIDDEN_FIELDS[i - 1][j] = true;
+							MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 					if (i + 2 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i + 2][j] = true;
-						MATRIX[i + 4][j].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i +2 ][j])
+						{
+							FORBIDDEN_FIELDS[i + 2][j] = true;
+							MATRIX[i + 2][j].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -467,14 +560,22 @@ public:
 				{
 					if (j + 1 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 1] = true;
-						MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j + 1])
+						{
+							FORBIDDEN_FIELDS[i][j + 1] = true;
+							MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 					if (j - 2 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 2] = true;
-						MATRIX[i][j - 2].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j - 2])
+						{
+							FORBIDDEN_FIELDS[i][j - 2] = true;
+							MATRIX[i][j - 2].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 
@@ -488,14 +589,23 @@ public:
 				{
 					if (j - 1 >= 0)
 					{
-						FORBIDDEN_FIELDS[i][j - 1] = true;
-						MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j - 1])
+						{
+							FORBIDDEN_FIELDS[i][j - 1] = true;
+							MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+						}
+
 					}
 
 					if (j + 2 < BOARD_SIZE)
 					{
-						FORBIDDEN_FIELDS[i][j + 2] = true;
-						MATRIX[i][j + 2].setFillColor(sf::Color::Red);
+						if (!BOARD_OF_BOOLS[i][j + 2])
+						{
+							FORBIDDEN_FIELDS[i][j + 2] = true;
+							MATRIX[i][j + 2].setFillColor(sf::Color::Red);
+
+						}
+
 					}
 
 				}
@@ -504,6 +614,174 @@ public:
 
 
 		}
+		else if (Detect_Ship_Size(i, j) == 1 && !QUADRA && !TRIPLE && !DOUBLE)
+		{
+			if (i - 1 >= 0)
+			{
+				//LEWY GORNY ZABLOKUJ
+				if (j - 1 >= 0)
+				{
+					if (!BOARD_OF_BOOLS[i-1][j - 1])
+					{
+						FORBIDDEN_FIELDS[i - 1][j - 1] = true;
+						MATRIX[i - 1][j - 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+				//LEWY SRODKOWY ZABLOKUJ
+				if (!BOARD_OF_BOOLS[i - 1][j])
+				{
+					FORBIDDEN_FIELDS[i - 1][j] = true;
+					MATRIX[i - 1][j].setFillColor(sf::Color::Red);
+				}
+
+				//LEWY DOLNY ZABLOKUJ
+				if (j + 1 < BOARD_SIZE)
+				{
+					if (!BOARD_OF_BOOLS[i - 1][j + 1])
+					{
+						FORBIDDEN_FIELDS[i - 1][j + 1] = true;
+						MATRIX[i - 1][j + 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+
+			}
+
+			if (i + 1 < BOARD_SIZE)
+			{
+				if (j - 1 >= 0)
+				{
+					if (!BOARD_OF_BOOLS[i + 1][j - 1])
+					{
+						FORBIDDEN_FIELDS[i + 1][j - 1] = true;
+						MATRIX[i + 1][j - 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+				//LEWY SRODKOWY ZABLOKUJ
+				if (!BOARD_OF_BOOLS[i + 1][j])
+				{
+					FORBIDDEN_FIELDS[i + 1][j] = true;
+					MATRIX[i + 1][j].setFillColor(sf::Color::Red);
+				}
+
+				//LEWY DOLNY ZABLOKUJ
+
+				if (j + 1 < BOARD_SIZE)
+				{
+					if (!BOARD_OF_BOOLS[i + 1][j+1])
+					{
+						FORBIDDEN_FIELDS[i + 1][j + 1] = true;
+						MATRIX[i + 1][j + 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+			}
+
+			if (j - 1 >= 0)
+			{
+				if (i - 1 >= 0)
+				{
+					if (!BOARD_OF_BOOLS[i -1][j - 1])
+					{
+						FORBIDDEN_FIELDS[i - 1][j - 1] = true;
+						MATRIX[i - 1][j - 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+				//LEWY SRODKOWY ZABLOKUJ
+				if (!BOARD_OF_BOOLS[i][j - 1])
+				{
+					FORBIDDEN_FIELDS[i][j - 1] = true;
+					MATRIX[i][j - 1].setFillColor(sf::Color::Red);
+				}
+
+				//LEWY DOLNY ZABLOKUJ
+				if (i + 1 < BOARD_SIZE)
+				{
+					if (!BOARD_OF_BOOLS[i+1][j - 1])
+					{
+						FORBIDDEN_FIELDS[i + 1][j - 1] = true;
+						MATRIX[i + 1][j - 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+			}
+
+			if (j + 1 >= 0)
+			{
+				if (i - 1 >= 0)
+				{
+					if (!BOARD_OF_BOOLS[i - 1][j + 1])
+					{
+						FORBIDDEN_FIELDS[i - 1][j + 1] = true;
+						MATRIX[i - 1][j + 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+				//LEWY SRODKOWY ZABLOKUJ
+				if (!BOARD_OF_BOOLS[i][j + 1])
+				{
+					FORBIDDEN_FIELDS[i][j + 1] = true;
+					MATRIX[i][j + 1].setFillColor(sf::Color::Red);
+				}
+
+				//LEWY DOLNY ZABLOKUJ
+
+				if (i + 1 < BOARD_SIZE)
+				{
+					if (!BOARD_OF_BOOLS[i + 1][j + 1])
+					{
+						FORBIDDEN_FIELDS[i + 1][j + 1] = true;
+						MATRIX[i + 1][j + 1].setFillColor(sf::Color::Red);
+					}
+
+				}
+			}
+
+
+
+		}
+
+
+	}
+
+
+
+
+	void REROLL_BUTTON(sf::RenderWindow& okno)
+	{
+
+		REROLL.setSize(sf::Vector2f(CELL_SIDE, CELL_SIDE));
+
+		REROLL.setFillColor(sf::Color::Cyan);
+
+		REROLL.setOutlineThickness(4);
+
+		REROLL.setOutlineColor(sf::Color::Blue);
+
+		REROLL.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 -30, (WINDOW_HEIGHT / 2) ));
+
+		okno.draw(REROLL);
+
+	}
+
+
+	void START_BUTTON_SHOW(sf::RenderWindow& okno)
+	{
+		START_BUTTON.setSize(sf::Vector2f(CELL_SIDE, CELL_SIDE));
+
+		START_BUTTON.setFillColor(sf::Color::Green);
+
+		START_BUTTON.setOutlineThickness(4);
+
+		START_BUTTON.setOutlineColor(sf::Color::Blue);
+
+		START_BUTTON.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 - 30, (WINDOW_HEIGHT / 2)+80));
+
+		okno.draw(START_BUTTON);
+
 	}
 
 
@@ -699,6 +977,7 @@ int main()
 
 
 
+
 	// WYRENDERUJ NA EKRANIE OBIEKT 'OKNO' O ROZMIARACH ZDEFINIOWANYCH NA SAMEJ GORZE, OKNO MA SIE NAZYWAC 'STATKI'
 	sf::RenderWindow okno(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "STATKI");
 
@@ -718,93 +997,124 @@ int main()
 	//PODSTAWOWE OPERACJE STARTOWE DLA KAZDEJ Z PLANSZ
 	INITIATE_PLAYERS(gracz, komputer);
 
+	gracz.CONTINUE = false;
+
 
 	sf::Event zdarzenie, WYBOR;
 
 	Pokaz_Na_Ekranie(gracz, okno); // Wywołanie funkcji Pokaz_Na_Ekranie()
 
+	gracz.REROLL_BUTTON(okno);
+
 	//TAK DLUGO JAK OKNO JEST OTWARTE
 	while (okno.isOpen())
 	{
-		while (okno.pollEvent(WYBOR)&&(tura))///ZROBILEM TUTAJ NIESKONCZONA PETLE, PRZEZ TO ZE DODALEM IF TURA KTORA JEST ZAWSZE PRAWDA DOPOKI NIE ZACZNIEMY ROZGRYWKI
-		{											////BO W TRAKCIE ROZGRYWKI DOPIERO SIE PRZELACZA. TO ROZWIAZANIE CHWILOWE
-			if (WYBOR.type == sf::Event::Closed)//JEZELI KLIKNIEMY X NA PASKU TO OKNO SIE WYLACZY (FUNKCJA CLOSE(); )
-			{
-				okno.close();
-				cout << endl;
-				gracz.wypisz();
-				cout << endl;
-				komputer.wypisz();
-			}
-
-			if (WYBOR.type == sf::Event::MouseButtonPressed)
-			{
-				if (WYBOR.mouseButton.button == sf::Mouse::Left)
+		if (!gracz.CONTINUE)///////ETAP WYBORU STATKOW
+		{
+			while (okno.pollEvent(WYBOR) && (!gracz.CONTINUE))///ZROBILEM TUTAJ NIESKONCZONA PETLE, PRZEZ TO ZE DODALEM IF TURA KTORA JEST ZAWSZE PRAWDA DOPOKI NIE ZACZNIEMY ROZGRYWKI
+			{											////BO W TRAKCIE ROZGRYWKI DOPIERO SIE PRZELACZA. TO ROZWIAZANIE CHWILOWE
+				if (WYBOR.type == sf::Event::Closed)//JEZELI KLIKNIEMY X NA PASKU TO OKNO SIE WYLACZY (FUNKCJA CLOSE(); )
 				{
-					sf::Vector2i pozycja_myszy = sf::Mouse::getPosition(okno);
-					for (int i = 0; i < 10; i++)
+					okno.close();
+					cout << endl;
+					gracz.wypisz();
+					cout << endl;
+					komputer.wypisz();
+				}
+
+				if (WYBOR.type == sf::Event::MouseButtonPressed)
+				{
+					if (WYBOR.mouseButton.button == sf::Mouse::Left)
 					{
-						for (int j = 0; j < 10; j++)
-						{//GETGLOBALBOUNDS.CONTAINS ZWRACA WARTOSC//TRUE JEZELI DANE POLE MIESCI SIE W RAMACH INNEGO POLA
-							if ((gracz.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (!gracz.Is_Set_To_Forbidden(i,j)))
-							{
-								// obsłuż kliknięcie na polu planszy
-								// np. zmień kolor pola na niebieski
-								if (gracz.BOARD_OF_BOOLS[i][j] == false && gracz.Check_If_Ships_Are_Alive())
+						sf::Vector2i pozycja_myszy = sf::Mouse::getPosition(okno);
+
+						if (gracz.REROLL.getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y))
+						{
+							gracz.Reset_Board();
+						}
+
+						if (!gracz.Check_If_Ships_Are_Alive() && gracz.START_BUTTON.getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y))
+						{
+							gracz.CONTINUE = true;
+						}
+
+						for (int i = 0; i < 10; i++)
+						{
+							for (int j = 0; j < 10; j++)
+							{//GETGLOBALBOUNDS.CONTAINS ZWRACA WARTOSC//TRUE JEZELI DANE POLE MIESCI SIE W RAMACH INNEGO POLA
+								if ((gracz.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (!gracz.Is_Set_To_Forbidden(i, j)))
 								{
+									// obsłuż kliknięcie na polu planszy
+									// np. zmień kolor pola na niebieski
+									if (gracz.BOARD_OF_BOOLS[i][j] == false && gracz.Check_If_Ships_Are_Alive())
+									{
 
-									gracz.MATRIX[i][j].setFillColor(sf::Color::Yellow);
-									Set_To_Clicked(gracz, i, j);
-									COLLISION_BLOCKS_RENDER_AND_SET(gracz, i, j);
-									SHIPS_OCCUR(gracz, i, j);
+										gracz.MATRIX[i][j].setFillColor(sf::Color::Yellow);
+										Set_To_Clicked(gracz, i, j);
+										COLLISION_BLOCKS_RENDER_AND_SET(gracz, i, j);
+										SHIPS_OCCUR(gracz, i, j);
 
-									gracz.Forbide_Ends(i, j);
+										gracz.Forbide_Ends(i, j);
+
+
+
+
+									}
+									if (!gracz.Check_If_Ships_Are_Alive())
+									{
+										gracz.Fill_The_Board();
+
+									}
+
+
+
+									//ZADBANIE O TO ABY FORBIDDEN NIE WYCHODZILO POZA ZAKRES POLA
+
+
+
+
 
 
 
 
 								}
-								if (!gracz.Check_If_Ships_Are_Alive())
-								{
-									gracz.Fill_The_Board();
-								}
-
-
-
-								//ZADBANIE O TO ABY FORBIDDEN NIE WYCHODZILO POZA ZAKRES POLA
-
-
-
-
-
-
-
-
 							}
+
 						}
 
 					}
 
 				}
 
+
+
+
+				//CHYBA FRAGMENT ALA OBSLUGA RENDEROWANIA GRAFIKI//
+				okno.clear();//SKASUJ POPRZEDNIA KLATKE
+
+				Pokaz_Na_Ekranie(gracz, okno);
+
+				Pokaz_Na_Ekranie(komputer, okno);
+
+				if (!gracz.Check_If_Ships_Are_Alive())
+				{
+					gracz.START_BUTTON_SHOW(okno);
+				}
+
+				gracz.REROLL_BUTTON(okno);
+
+
+
+				okno.display(); //WYRENDERUJ NOWA KLATKE
+
 			}
-			okno.clear();//SKASUJ POPRZEDNIA KLATKE
-
-			Pokaz_Na_Ekranie(gracz, okno);
-
-			Pokaz_Na_Ekranie(komputer, okno);
-
-			okno.display(); //WYRENDERUJ NOWA KLATKE
-
 		}
 
 
 
 
-
-
-		/////TRWAJA PRACE NAD KODEM WYBIERAJACYM STATKI DO GRY WIEC TA LINIA JEST ZAWIESZONA ( WORK IN PROGRESS )
-			/*
+		if (gracz.CONTINUE)//////ETAP KIEDY GRACZ KLIKNIE START   CZYLI ZIELONY PRZYCISK
+		{
 			while (okno.pollEvent(zdarzenie))//PRZYPISZ ZALEZNOSC OD ZDARZENIA
 			{
 				if (zdarzenie.type == sf::Event::Closed)//JEZELI KLIKNIEMY X NA PASKU TO OKNO SIE WYLACZY (FUNKCJA CLOSE(); )
@@ -825,6 +1135,7 @@ int main()
 						{
 							for (int j = 0; j < 10; j++)
 							{//GETGLOBALBOUNDS.CONTAINS ZWRACA WARTOSC//TRUE JEZELI DANE POLE MIESCI SIE W RAMACH INNEGO POLA
+								/*
 								if ((gracz.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (CHECK_TURN(&tura)))
 								{
 									// obsłuż kliknięcie na polu planszy
@@ -835,15 +1146,28 @@ int main()
 									//NA DRUGIEGO GRACZA I NA ODWROT
 
 								}
+								*/
 
 								if ((komputer.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y))&&(!CHECK_TURN(&tura)))
 								{
 									// obsłuż kliknięcie na polu planszy
 									// np. zmień kolor pola na niebieski
-									komputer.MATRIX[i][j].setFillColor(sf::Color::Blue);
-									Set_To_Clicked(komputer, i, j);
-									tura = true;//OPIS WYZEJ
+									if (komputer.BOARD_OF_BOOLS[i][j] && !komputer.IF_CLICKED[i][j])
+									{
+										komputer.MATRIX[i][j].setFillColor(sf::Color::Red);
+										komputer.BOARD_OF_BOOLS[i][j] = false;
+										komputer.IF_CLICKED[i][j] = true;
+										tura = true;
 
+									}
+									if (!komputer.BOARD_OF_BOOLS[i][j] && !komputer.IF_CLICKED[i][j])
+									{
+										komputer.MATRIX[i][j].setFillColor(sf::Color::Blue);
+										komputer.IF_CLICKED[i][j] = true;
+									}
+
+
+									tura = true;//OPIS WYZEJ
 								}
 
 							}
@@ -861,14 +1185,23 @@ int main()
 				okno.display(); //RENDER
 
 			}
-			*/
-
-
-
 		}
 
 
 
-		return 0;
+
+
+
+
+
+			////////////////////////////////////////////////////////////////////
+
+
+
 	}
+
+
+
+	return 0;
+}
 
