@@ -112,7 +112,7 @@ public:
 				//PONIZEJ USTAWIANA JEST POZYCJA KAZDEJ Z KOMOREK CZYT. NP DLA I = 0  I+1 = 1 , 1*50 + 100(JEZELI PODANMY 100 JAKO X POCZATKU)
 				//														KWADRAT RYSUJE SIE POPRAWNIE PONIEWAZ WCZESNIEJ ZADEKLAROWALISMY JEGO ROZMIAR
 				//														PATRZ FUNKCJA SETSIZE
-				MATRIX[i][j].setPosition(sf::Vector2f(((i+1)*CELL_SIDE)+X_POCZATKU,((j+1)*CELL_SIDE)+Y_POCZATKU));
+				MATRIX[i][j].setPosition(sf::Vector2f(((i + 1) * CELL_SIDE) + X_POCZATKU, ((j + 1) * CELL_SIDE) + Y_POCZATKU));
 
 			}
 		}
@@ -171,7 +171,7 @@ public:
 
 
 	//FUNKCJA STWORZONA PO TO ABY USTAWIAC NA MACIERZY POLA ZAKAZANE DO KLIKNIECIA
-	void Set_To_Forbidden(int i,int j)
+	void Set_To_Forbidden(int i, int j)
 	{
 		FORBIDDEN_FIELDS[i][j] = true;
 	}
@@ -258,7 +258,7 @@ public:
 	//NAJPIERW SZUKA CZTEROMASZTOWCA, JEZELI OKAZE SIE ZE PO KLIKNIECIU PUNKTU
 	//WYKRYTY ZOSTANIE CZTEROMASZTOWIEC TO FUNKCJA BLOKUJE POLE NA PRAWO LUB NA LEWO OD STRZELONEGO STATKU ORAZ 4-TE POLE NA LEWO LUB NA PRAWO
 	/// NA LEWO CZY NA PRAWO----- JEST TO UZALEZNIONE OD TEGO Z KTOREJ STRONY STATEK SIE ZACZYNA A Z KTOREJ KONCZY
-	void Forbide_Ends(int i,int j)
+	void Forbide_Ends(int i, int j)
 	{
 		if (Detect_Ship_Size(i, j) == 4)
 		{
@@ -268,7 +268,7 @@ public:
 				{
 					if (i + 1 < BOARD_SIZE)
 					{
-						if (!BOARD_OF_BOOLS[i - 1][j])
+						if (!BOARD_OF_BOOLS[i + 1][j])
 						{
 							FORBIDDEN_FIELDS[i + 1][j] = true;
 							MATRIX[i + 1][j].setFillColor(sf::Color::Red);
@@ -321,7 +321,7 @@ public:
 				{
 					if (j + 1 < BOARD_SIZE)
 					{
-						if (!BOARD_OF_BOOLS[i][j+1])
+						if (!BOARD_OF_BOOLS[i][j + 1])
 						{
 							FORBIDDEN_FIELDS[i][j + 1] = true;
 							MATRIX[i][j + 1].setFillColor(sf::Color::Red);
@@ -414,7 +414,7 @@ public:
 				{
 					if (i - 1 >= 0)
 					{
-						if (!BOARD_OF_BOOLS[i-1][j])
+						if (!BOARD_OF_BOOLS[i - 1][j])
 						{
 							FORBIDDEN_FIELDS[i - 1][j] = true;
 							MATRIX[i - 1][j].setFillColor(sf::Color::Red);
@@ -442,7 +442,7 @@ public:
 				{
 					if (j + 1 < BOARD_SIZE)
 					{
-						if (!BOARD_OF_BOOLS[i][j+1])
+						if (!BOARD_OF_BOOLS[i][j + 1])
 						{
 							FORBIDDEN_FIELDS[i][j + 1] = true;
 							MATRIX[i][j + 1].setFillColor(sf::Color::Red);
@@ -451,7 +451,7 @@ public:
 					}
 					if (j - 3 >= 0)
 					{
-						if (!BOARD_OF_BOOLS[i][j-3])
+						if (!BOARD_OF_BOOLS[i][j - 3])
 						{
 							FORBIDDEN_FIELDS[i][j - 3] = true;
 							MATRIX[i][j - 3].setFillColor(sf::Color::Red);
@@ -542,7 +542,7 @@ public:
 
 					if (i + 2 < BOARD_SIZE)
 					{
-						if (!BOARD_OF_BOOLS[i +2 ][j])
+						if (!BOARD_OF_BOOLS[i + 2][j])
 						{
 							FORBIDDEN_FIELDS[i + 2][j] = true;
 							MATRIX[i + 2][j].setFillColor(sf::Color::Red);
@@ -621,7 +621,7 @@ public:
 				//LEWY GORNY ZABLOKUJ
 				if (j - 1 >= 0)
 				{
-					if (!BOARD_OF_BOOLS[i-1][j - 1])
+					if (!BOARD_OF_BOOLS[i - 1][j - 1])
 					{
 						FORBIDDEN_FIELDS[i - 1][j - 1] = true;
 						MATRIX[i - 1][j - 1].setFillColor(sf::Color::Red);
@@ -670,7 +670,7 @@ public:
 
 				if (j + 1 < BOARD_SIZE)
 				{
-					if (!BOARD_OF_BOOLS[i + 1][j+1])
+					if (!BOARD_OF_BOOLS[i + 1][j + 1])
 					{
 						FORBIDDEN_FIELDS[i + 1][j + 1] = true;
 						MATRIX[i + 1][j + 1].setFillColor(sf::Color::Red);
@@ -683,7 +683,7 @@ public:
 			{
 				if (i - 1 >= 0)
 				{
-					if (!BOARD_OF_BOOLS[i -1][j - 1])
+					if (!BOARD_OF_BOOLS[i - 1][j - 1])
 					{
 						FORBIDDEN_FIELDS[i - 1][j - 1] = true;
 						MATRIX[i - 1][j - 1].setFillColor(sf::Color::Red);
@@ -700,7 +700,7 @@ public:
 				//LEWY DOLNY ZABLOKUJ
 				if (i + 1 < BOARD_SIZE)
 				{
-					if (!BOARD_OF_BOOLS[i+1][j - 1])
+					if (!BOARD_OF_BOOLS[i + 1][j - 1])
 					{
 						FORBIDDEN_FIELDS[i + 1][j - 1] = true;
 						MATRIX[i + 1][j - 1].setFillColor(sf::Color::Red);
@@ -761,7 +761,7 @@ public:
 
 		REROLL.setOutlineColor(sf::Color::Blue);
 
-		REROLL.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 -30, (WINDOW_HEIGHT / 2) ));
+		REROLL.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 - 30, (WINDOW_HEIGHT / 2)));
 
 		okno.draw(REROLL);
 
@@ -778,7 +778,7 @@ public:
 
 		START_BUTTON.setOutlineColor(sf::Color::Blue);
 
-		START_BUTTON.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 - 30, (WINDOW_HEIGHT / 2)+80));
+		START_BUTTON.setPosition(sf::Vector2f(WINDOW_WIDTH / 2 - 30, (WINDOW_HEIGHT / 2) + 80));
 
 		okno.draw(START_BUTTON);
 
@@ -806,7 +806,7 @@ bool Check_If_Clicked(BOARD& gracz, int i, int j)
 
 
 //FUNCKJA USTAWIAJACA MIEJSCE STATKOW NA PODSTAWIE KLIKNIETYCH PRZEZ GRACZA POL
-void Set_Ships(BOARD &gracz)
+void Set_Ships(BOARD& gracz)
 {
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
@@ -824,7 +824,7 @@ void Set_Ships(BOARD &gracz)
 
 
 //FUNKCJA WYPISUJACA NA EKRANIE PLANSZE
-void Pokaz_Na_Ekranie(BOARD &gracz,sf::RenderWindow &okno)
+void Pokaz_Na_Ekranie(BOARD& gracz, sf::RenderWindow& okno)
 {
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
@@ -838,7 +838,7 @@ void Pokaz_Na_Ekranie(BOARD &gracz,sf::RenderWindow &okno)
 
 //FUNKCJA USTAWIAJACA POLE NA KLIKNIETE (OCZYWISCIE FUNKCJA DZIALA POD KONTROLA PROGRAMISTY, CZYLI PROGRAMISTA ZADBA O TO ZEBY POLE BYLO OZNACZONE JAKO KLIKNIETE
 //TYLKO WTEDY KIEDY JEST MOZLIWOSC JEGO KLIKNIECIA
-void Set_To_Clicked(BOARD &gracz,int i,int j)
+void Set_To_Clicked(BOARD& gracz, int i, int j)
 {
 	gracz.BOARD_OF_BOOLS[i][j] = 1;
 }
@@ -848,7 +848,7 @@ void Set_To_Clicked(BOARD &gracz,int i,int j)
 
 
 //INICJALIZACJA GRACZY Z PARAMETRAMI PODSTAWOWYMI CZYTAJ STARTOWYMI
-void INITIATE_PLAYERS(BOARD &gracz, BOARD &komputer)
+void INITIATE_PLAYERS(BOARD& gracz, BOARD& komputer)
 {
 	gracz.Reset_Board();
 
@@ -873,7 +873,7 @@ void INITIATE_PLAYERS(BOARD &gracz, BOARD &komputer)
 
 
 //FUNKCJA SPRAWDZAJACA KTORA TURA JEST TERAZ
-bool CHECK_TURN(bool *tura)
+bool CHECK_TURN(bool* tura)
 {
 	if (*tura == false)
 	{
@@ -889,7 +889,7 @@ bool CHECK_TURN(bool *tura)
 
 
 
-void COLLISION_BLOCKS_RENDER_AND_SET(BOARD& gracz,int i,int j)
+void COLLISION_BLOCKS_RENDER_AND_SET(BOARD& gracz, int i, int j)
 {
 	if ((i - 1 >= 0) && (j - 1 >= 0))
 	{
@@ -913,22 +913,22 @@ void COLLISION_BLOCKS_RENDER_AND_SET(BOARD& gracz,int i,int j)
 	}
 	if (true)////WARUNEK TRUE ABY NIE BURZYC KONSTRUKCJI
 	{
-		if ((j - 2 > 0) && (gracz.BOARD_OF_BOOLS[i][j - 2] == true) && (!gracz.BOARD_OF_BOOLS[i][j-1]))
+		if ((j - 2 > 0) && (gracz.BOARD_OF_BOOLS[i][j - 2] == true) && (!gracz.BOARD_OF_BOOLS[i][j - 1]))
 		{
 			gracz.MATRIX[i][j - 1].setFillColor(sf::Color::Red);
 			gracz.Set_To_Forbidden(i, j - 1);
 		}
-		if ((i + 2 < BOARD_SIZE) && (gracz.BOARD_OF_BOOLS[i + 2][j] == true) && (!gracz.BOARD_OF_BOOLS[i+1][j]))
+		if ((i + 2 < BOARD_SIZE) && (gracz.BOARD_OF_BOOLS[i + 2][j] == true) && (!gracz.BOARD_OF_BOOLS[i + 1][j]))
 		{
 			gracz.MATRIX[i + 1][j].setFillColor(sf::Color::Red);
 			gracz.Set_To_Forbidden(i + 1, j);
 		}
-		if ((i - 2 > 0) && (gracz.BOARD_OF_BOOLS[i - 2][j] == true) && (!gracz.BOARD_OF_BOOLS[i-1][j]))
+		if ((i - 2 > 0) && (gracz.BOARD_OF_BOOLS[i - 2][j] == true) && (!gracz.BOARD_OF_BOOLS[i - 1][j]))
 		{
 			gracz.MATRIX[i - 1][j].setFillColor(sf::Color::Red);
 			gracz.Set_To_Forbidden(i - 1, j);
 		}
-		if ((j + 2 > 0) && (gracz.BOARD_OF_BOOLS[i][j + 2] == true) && (!gracz.BOARD_OF_BOOLS[i][j+1]))
+		if ((j + 2 > 0) && (gracz.BOARD_OF_BOOLS[i][j + 2] == true) && (!gracz.BOARD_OF_BOOLS[i][j + 1]))
 		{
 			gracz.MATRIX[i][j + 1].setFillColor(sf::Color::Red);
 			gracz.Set_To_Forbidden(i, j - +1);
@@ -942,7 +942,7 @@ void COLLISION_BLOCKS_RENDER_AND_SET(BOARD& gracz,int i,int j)
 
 
 
-void SHIPS_OCCUR(BOARD &gracz,int i, int j)
+void SHIPS_OCCUR(BOARD& gracz, int i, int j)
 {
 	if (gracz.Detect_Ship_Size(i, j) == 4 && gracz.QUADRA)
 	{
@@ -1148,7 +1148,7 @@ int main()
 								}
 								*/
 
-								if ((komputer.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y))&&(!CHECK_TURN(&tura)))
+								if ((komputer.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (!CHECK_TURN(&tura)))
 								{
 									// obsłuż kliknięcie na polu planszy
 									// np. zmień kolor pola na niebieski
@@ -1194,7 +1194,7 @@ int main()
 
 
 
-			////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////
 
 
 
