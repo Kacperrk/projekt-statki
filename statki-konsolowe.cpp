@@ -2,26 +2,60 @@
 #include <cstdlib>
 #include <ctime>
 
-using namespace std;
-
-// odkomentuj tylko jesli nie chcesz czyszczenia konsoli
-#define CZYSZCZENIE_EKRANU ;
-
-// odkomentuj tylko jesli uzywasz systemu linux
-//#define CZYSZCZENIE_EKRANU system("clear");
-
-// odkomentuj tylko jesli uzywasz systemu windows
-//#define CZYSZCZENIE_EKRANU system("cls");
-
 #define WIERSZE 11
 #define KOLUMNY 11
 
+// czyszczenie konsoli niezalezne od systemu operacyjnego
+void czysc_ekran(void)
+{
+#ifdef _WIN32
+	system("cls");
+#else
+	system("clear");
+#endif
+}
+
+// klasa z planszami zawierajaca metody do ich obslugi
 class Plansza
 {
 private:
 
 char macierz[WIERSZE][KOLUMNY];
 
+// ustawia wszystkie pola planszy na znak 'O'
+void czyszczenie_planszy(void)
+{
+	for (int i = 0; i < WIERSZE; i++)
+	{
+		for (int j = 0; j < KOLUMNY; j++)
+		{
+			macierz[i][j] = 'O';
+		}
+	}
+}
+
+// dodaje do planszy oznaczenia kolumn i wierszy
+void oznaczenia_planszy(void)
+{
+	macierz[0][0] = ' ';
+
+	char litera = 'A';
+	char liczba = '0';
+
+	for (int i = 1; i < WIERSZE; i++)
+	{
+		macierz[i][0] = litera;
+		litera++;
+	}
+
+	for (int i = 1; i < KOLUMNY; i++)
+	{
+		macierz[0][i] = liczba;
+		liczba++;
+	}
+}
+
+// funkcja sprawdza czy na planszy jest odpowiednia liczba statkow
 bool czy_statkow_jest_20(void)
 {
 	int licznik = 0;
@@ -569,12 +603,14 @@ void jednomasztowce(void)
 
 public:
 
+// konstruktor
 Plansza(void)
 {
 	czyszczenie_planszy();
 	oznaczenia_planszy();
 }
 
+// destruktor
 ~Plansza(void)
 {
 
@@ -587,43 +623,9 @@ void wypisz_plansze(void)
 	{
 		for (int j = 0; j < KOLUMNY; j++)
 		{
-			//cout << macierz[i][j] << "\t";
-			cout << macierz[i][j] << " ";
+			std::cout << macierz[i][j] << " ";
 		}
-		cout << endl;
-	}
-}
-
-// ustawia wszystkie pola planszy na znak 'O'
-void czyszczenie_planszy(void)
-{
-	for (int i = 0; i < WIERSZE; i++)
-	{
-		for (int j = 0; j < KOLUMNY; j++)
-		{
-			macierz[i][j] = 'O';
-		}
-	}
-}
-
-// dodaje do planszy oznaczenia kolumn i wierszy
-void oznaczenia_planszy(void)
-{
-	macierz[0][0] = ' ';
-
-	char litera = 'A';
-	char liczba = '0';
-
-	for (int i = 1; i < WIERSZE; i++)
-	{
-		macierz[i][0] = litera;
-		litera++;
-	}
-
-	for (int i = 1; i < KOLUMNY; i++)
-	{
-		macierz[0][i] = liczba;
-		liczba++;
+		std::cout << std::endl;
 	}
 }
 
@@ -658,6 +660,28 @@ bool czy_trafiony(char litera, int liczba)
 	return false;
 }
 
+// sprawdza czy gracz nie wpisal tego samego pola 2 razy
+bool czy_ponownie_to_samo_pole(char litera, int liczba)
+{
+	int wiersze = 0;
+
+	// zamienia podane litery od 'A' 'a' do 'J' 'j' na numer wiersza
+	for (int i = 0; i < 10; i++)
+	{
+		if (litera == ('A' + i) || litera == ('a' + i))
+		{
+			wiersze = (1 + i);
+		}
+	}
+
+	if (macierz[wiersze][liczba + 1] == 'x' || macierz[wiersze][liczba + 1] == '$')
+	{
+		return true;
+	}
+
+	return false;
+}
+
 // sprawdza czy na planszy nie zostal zaden nietrafiony statek
 bool czy_wszystkie_trafione(void)
 {
@@ -677,10 +701,8 @@ bool czy_wszystkie_trafione(void)
 // zamienia wszystkie statki na pola trafione
 void wygraj_gre(void)
 {
-	//for (int i = 0; i <= WIERSZE; i++)
 	for (int i = 1; i < WIERSZE; i++)
 	{
-		//for (int j = 0; j <= KOLUMNY; j++)
 		for (int j = 1; j < KOLUMNY; j++)
 		{
 			if (macierz[i][j] == '*')
@@ -694,10 +716,8 @@ void wygraj_gre(void)
 // zamienia wszystkie statki na pola puste
 void przegraj_gre(void)
 {
-	//for (int i = 0; i <= WIERSZE; i++)
 	for (int i = 1; i < WIERSZE; i++)
 	{
-		//for (int j = 0; j <= KOLUMNY; j++)
 		for (int j = 1; j < KOLUMNY; j++)
 		{
 			if (macierz[i][j] == '*')
@@ -761,50 +781,60 @@ void ustaw_statki_losowo(void)
 	}
 }
 
-void ustaw_statki_v2(void)
+void komputer_losuje_strzal(void)
 {
-	int first_x = 0;
-	int first_y = 0;
-	int last_x = 0;
-	int last_y = 0;
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
 
-	for (int a = 1; a <= 4; a++)
+	// strzelaj az spodlujesz lub trafisz wszystkie
+	bool czy_kazdy_trafiony = true;
+
+	while (true)
 	{
-		cout << "PODAJ ZAKRES STATKU O ROZMIARZE " << a << ":\n";
-
-		cin >> first_x;
-		cin >> first_y;
-		cin >> last_x;
-		cin >> last_y;
-
-		//for (int i = 0; i <= WIERSZE; i++)
+		// sprawdzanie czy wszystkie trafione
+		czy_kazdy_trafiony = true;
 		for (int i = 1; i < WIERSZE; i++)
 		{
-			//for (int j = 0; j <= KOLUMNY; j++)
 			for (int j = 1; j < KOLUMNY; j++)
 			{
-				if (i == first_x && j == first_y)
+				if (macierz[i][j] == '*')
 				{
-					if (first_x == last_x)
-					{
-						for (int k = j; k <= last_y; k++)
-						{
-							macierz[first_x][k] = '*';
-						}
-					}
-					else if (first_y == last_y)
-					{
-						for (int k = i; k <= last_x; k++)
-						{
-							macierz[k][first_y] = '*';
-						}
-					}
-					else
-					{
-						cout << "PODANO BLEDNY ZAKRES STATKU LUB STATEK NIE MOZE ZNAJDOWAC SIE W TYM MIEJSCU\n";
-					}
+					czy_kazdy_trafiony = false;
 				}
 			}
+		}
+
+		// jesli kazdy statek jest trafiony zakoncz petle
+		if (czy_kazdy_trafiony)
+		{
+			break;
+		}
+
+		wspolrzedna_pionowa = 1+rand()%10;
+		wspolrzedna_pozioma = 1+rand()%10;
+
+		// jesli trafiono w statek
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			// oznacz go jako trafiony
+			macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] = 'x';
+			// strzel jeszcze raz
+			continue;
+		}
+
+		// jesli trafiono juz w trafiony statek
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == 'x' ||
+		    macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '$')
+		{
+			// strzel jeszcze raz
+			continue;
+		}
+
+		// jesli spudlowales tracisz kolejke
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == 'O')
+		{
+			macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] = '$';
+			break;
 		}
 	}
 }
@@ -814,108 +844,152 @@ void ustaw_statki_v2(void)
 int main(void)
 {
 
+	std::cout << "GRA W STATKI\n\n";
+	std::cout << "W grę gra jednoczesnie jeden gracz i komputer\n";
+	std::cout << "Gracz wybiera pole, w ktore chce strzelic\n";
+	std::cout << "Jesli trafi, strzela jeszcze raz\n";
+	std::cout << "Jesli nie trafi, kolejke dostaje komputer\n";
+	std::cout << "Gra konczy sie, gdy ktorys z graczy zatopi wszystkie statki drugiego\n\n";
+
+	std::cout << "Statki na planszy:\n";
+	std::cout << " -jeden czteromasztowiec\n";
+	std::cout << " -dwa trojmasztowce\n";
+	std::cout << " -trzy dwumasztowce\n";
+	std::cout << " -cztery jednomasztowce\n\n";
+
+	std::cout << "Oznaczenia na planszy:\n";
+	std::cout << " O - puste pole\n";
+	std::cout << " * - statek\n";
+	std::cout << " x - trafiony\n";
+	std::cout << " $ - pudlo\n\n";
+
+	std::cout << "Skoro znasz juz zasady, naciscij enter, aby kontunuowac:\n";
+
+	getchar();
+
+	czysc_ekran();
+
 	srand(time(NULL));
 
+	// przygotowanie plansz
 	Plansza plansza_przeciwnika_ukryta;
 	Plansza plansza_przeciwnika_widoczna;
-	Plansza plansza_gracza_ukryta;
-	//Plansza plansza_gracza_widoczna;
+	Plansza plansza_gracza;
 
-	cout << "Statki:\n";
-	cout << "O - puste pole\n";
-	cout << "* - statek\n";
-	cout << "x - trafiony\n";
-	cout << "$ - pudlo\n\n";
-
+	// losowanie statkow na planszach
 	plansza_przeciwnika_ukryta.ustaw_statki_losowo();
+	plansza_gracza.ustaw_statki_losowo();
 
-	plansza_gracza_ukryta.ustaw_statki_losowo();
-
-	//plansza_przeciwnika_ukryta.ustaw_statki_v2();
-
-	cout << "Plansza przeciwnika ukryta:\n";
-	plansza_przeciwnika_ukryta.wypisz_plansze();
-	cout << endl;
-	cout << "Plansza przeciwnika widoczna:\n";
+	// wypisanie plansz
+	std::cout << "Plansza przeciwnika:\n";
 	plansza_przeciwnika_widoczna.wypisz_plansze();
-	cout << endl;
-	cout << "Plansza gracza ukryta:\n";
-	plansza_gracza_ukryta.wypisz_plansze();
+	std::cout << "\nTwoja plansza:\n";
+	plansza_gracza.wypisz_plansze();
 
+	// graj dopoki nie zbijesz wszystkich statkow przeciwnika
+	// jesli to przeciwnik wygra zostanie wywolany break
 	while (!plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
 	{
-		cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
-
 		char litera = 0;
 		int liczba = 0;
-		bool right_input = false;
 
+		std::cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+
+		// test na poprawnosc wprowadzonych wspolrzednych
+		bool right_input = false;
 		do
 		{
-			cin >> litera;
-			cin >> liczba;
-
-			if (cin.fail())
+			std::cin >> litera;
+			std::cin >> liczba;
+			if (std::cin.fail())
 			{
-				cout << "\nPodano nieprawidlowa wartosc\n";
-				cout << "Podaj wspolrzedne punktu (np. a1):\n";
-				cin.clear();
-				cin.ignore(1000, '\n');
+				std::cout << "\nPodano nieprawidlowa wartosc\n";
+				std::cout << "Podaj wspolrzedne punktu (np. a1):\n";
+				std::cin.clear();
+				std::cin.ignore(1000, '\n');
 				right_input = false;
 			}
 			else
 			{
 				right_input = true;
 			}
-		} while (right_input == false);
+		} while (!right_input);
 
-		cout << litera;
-		cout << liczba;
-		cout << endl;
-
-		if (plansza_przeciwnika_ukryta.czy_trafiony(litera, liczba))
+		// jesli uzytkownik poda kolejny raz to samo pole
+		if (plansza_przeciwnika_ukryta.czy_ponownie_to_samo_pole(litera, liczba))
 		{
-			CZYSZCZENIE_EKRANU;
-			cout << endl;
-			cout << "Plansza przeciwnika ukryta:\n";
-			plansza_przeciwnika_ukryta.wypisz_plansze();
-			cout << endl;
-
-
-
-			plansza_przeciwnika_widoczna = plansza_przeciwnika_ukryta;
-			plansza_przeciwnika_widoczna.przegraj_gre();
-
-
-
-			cout << "Plansza przeciwnika widoczna:\n";
-			plansza_przeciwnika_widoczna.wypisz_plansze();
-			cout << "\nTrafiony\n";
+			std::cout << "\nPodawales juz to pole, podaj inne!\n";
+			continue;
 		}
-		else if (!plansza_przeciwnika_ukryta.czy_trafiony(litera, liczba))
+
+		// jesli trafisz w statek
+		else if (plansza_przeciwnika_ukryta.czy_trafiony(litera, liczba))
 		{
-			CZYSZCZENIE_EKRANU;
-			cout << endl;
-			cout << "Plansza przeciwnika ukryta:\n";
-			plansza_przeciwnika_ukryta.wypisz_plansze();
-			cout << endl;
-
-
+			czysc_ekran();
 
 			// kopiowanie planszy przeciwnika dla trafionych i nietrafionych
 			plansza_przeciwnika_widoczna = plansza_przeciwnika_ukryta;
 			// usunienie skopiowanych statkow z planszy widocznej
 			plansza_przeciwnika_widoczna.przegraj_gre();
 
-
-
-			cout << "Plansza przeciwnika widoczna:\n";
+			// wypisz po strzale
+			std::cout << "Plansza przeciwnika:\n";
 			plansza_przeciwnika_widoczna.wypisz_plansze();
-			cout << "\nNietrafiony\n";
+			std::cout << "\nTwoja plansza:\n";
+			plansza_gracza.wypisz_plansze();
+			std::cout << std::endl;
+
+			std::cout << "Trafiony\n";
+
+			if (!plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
+			{
+				std::cout << "Strzelasz ponownie\n";
+			}
+		}
+		// jesli nie trafisz w statek
+		else if (!plansza_przeciwnika_ukryta.czy_trafiony(litera, liczba))
+		{
+			czysc_ekran();
+
+			// kopiowanie planszy przeciwnika dla trafionych i nietrafionych
+			plansza_przeciwnika_widoczna = plansza_przeciwnika_ukryta;
+			// usunienie skopiowanych statkow z planszy widocznej
+			plansza_przeciwnika_widoczna.przegraj_gre();
+
+			// kolej komputera
+			plansza_gracza.komputer_losuje_strzal();
+
+			// wypisz po strzale
+			std::cout << "Plansza przeciwnika:\n";
+			plansza_przeciwnika_widoczna.wypisz_plansze();
+			std::cout << "\nTwoja plansza:\n";
+			plansza_gracza.wypisz_plansze();
+			std::cout << std::endl;
+
+			std::cout << "Nietrafiony\n";
+			std::cout << "Przeciwnik wykonal swoj ruch\n";
+
+			// jesli komputer trafi wszystkie statki
+			if (plansza_gracza.czy_wszystkie_trafione())
+			{
+				break;
+			}
 		}
 	}
 
-	cout << "\nTrafiono wszystkie statki, gra skonczona\n";
+	// sprawdzenie kto wygral i wypisanie na ekran
+	if (plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
+	{
+		std::cout << "\n\n\nTRAFILES WSZYSTKIE STATKI, WYGRYWASZ!!!\n";
+	}
+	else if (plansza_gracza.czy_wszystkie_trafione())
+	{
+		std::cout << "\n\n\nKOMPUTER WYGRYWA!!!\n";
+	}
+
+	// zeby okno konsoli nie zamknelo sie od razu
+	std::cout << "\n\n\nNacisnij enter, zeby zakonczyc program:\n";
+	getchar();
 
 	return 0;
 }
