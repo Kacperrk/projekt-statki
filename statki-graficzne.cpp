@@ -6,6 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <Windows.h>
+#include <ctime>
 
 using namespace std;
 
@@ -28,7 +29,9 @@ public:
 
 	bool BOARD_OF_BOOLS[BOARD_SIZE][BOARD_SIZE];//MACIERZ ZAWIERAJACA INFORMACJE CZY DANE POLE JEST KLIKNIETE//NA DOLE FUNKCJA ZERUJACA
 
-	bool POSITIONS_OF_SHIPS[BOARD_SIZE][BOARD_SIZE];//TA MACIERZ INFORMUJE W JAKICH MIEJSCACH SA STATKI 0 - NIE MA || 1 - JEST
+	bool STRIKED[BOARD_SIZE][BOARD_SIZE];//TA MACIERZ INFORMUJE W JAKICH MIEJSCACH SA STATKI 0 - NIE MA || 1 - JEST 
+
+	bool POSITIONS_OF_SHIPS[BOARD_SIZE][BOARD_SIZE];
 
 	bool FORBIDDEN_FIELDS[BOARD_SIZE][BOARD_SIZE];// TA MACIERZ PRZECHOWUJE INFORMACJE O POLACH ZAKAZANYCH DO KLIKNIECIA
 
@@ -48,7 +51,12 @@ public:
 
 
 
-	sf::RectangleShape MATRIX[BOARD_SIZE][BOARD_SIZE];//UTWORZENIE 100 OBIEKTOW TYPU KWADRAT
+
+	//OBIEKTY GRAFICZNE PO KOLEI:
+	//POLE GRY DLA GRACZA
+	//POLE REROLL DO ZRESETOWANIA POL
+	//POLE START BUTTON DO ZATWIERDZENIA STATKOW ORAZ ROZPOCZECIA GRY
+	sf::RectangleShape MATRIX[BOARD_SIZE][BOARD_SIZE];//UTWORZENIE 100 OBIEKTOW TYPU KWADRAT 
 
 	sf::RectangleShape REROLL;
 
@@ -74,6 +82,7 @@ public:
 				BOARD_OF_BOOLS[i][j] = false;
 				FORBIDDEN_FIELDS[i][j] = false;
 				IF_CLICKED[i][j] = false;
+				STRIKED[i][j] = false;
 				MATRIX[i][j].setFillColor(sf::Color::White);
 				Reset_Ships();
 			}
@@ -112,7 +121,7 @@ public:
 				//PONIZEJ USTAWIANA JEST POZYCJA KAZDEJ Z KOMOREK CZYT. NP DLA I = 0  I+1 = 1 , 1*50 + 100(JEZELI PODANMY 100 JAKO X POCZATKU)
 				//														KWADRAT RYSUJE SIE POPRAWNIE PONIEWAZ WCZESNIEJ ZADEKLAROWALISMY JEGO ROZMIAR
 				//														PATRZ FUNKCJA SETSIZE
-				MATRIX[i][j].setPosition(sf::Vector2f(((i + 1) * CELL_SIDE) + X_POCZATKU, ((j + 1) * CELL_SIDE) + Y_POCZATKU));
+				MATRIX[i][j].setPosition(sf::Vector2f(((j + 1) * CELL_SIDE) + X_POCZATKU, ((i + 1) * CELL_SIDE) + Y_POCZATKU));
 
 			}
 		}
@@ -129,7 +138,7 @@ public:
 
 
 	//FUNKCJA SPRAWDZAJACA CZY STATKI SA JESZCZE NA PLANSZY
-	bool Check_If_Ships_Are_Alive()
+	bool Check_If_Ships_Are_Alive()///to jest wersja na potrzeby ustawiania statkow wiec moglaby sie nazywac IS SET 
 	{
 		if ((SINGLE) || (DOUBLE) || (TRIPLE) || (QUADRA))
 		{
@@ -139,6 +148,22 @@ public:
 		{
 			return 0; // NIE ZYJA
 		}
+	}
+
+	bool Live()
+	{
+		int i, j;
+		for (i = 0; i < BOARD_SIZE; i++)
+		{
+			for (j = 0; j < BOARD_SIZE; j++)
+			{
+				if (BOARD_OF_BOOLS[i][j] == true)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 
@@ -166,11 +191,30 @@ public:
 	}
 	*/
 
+	void Set_Ships_By_Hand()
+	{
+		BOARD_OF_BOOLS[1][1] = true;
+		BOARD_OF_BOOLS[1][2] = true;
+		BOARD_OF_BOOLS[1][3] = true;
+		BOARD_OF_BOOLS[1][4] = true;
+		BOARD_OF_BOOLS[5][8] = true;
+		BOARD_OF_BOOLS[6][8] = true;
+		BOARD_OF_BOOLS[7][8] = true;
+		BOARD_OF_BOOLS[10][3] = true;
+		BOARD_OF_BOOLS[3][8] = true;
+		BOARD_OF_BOOLS[2][4] = true;
+		BOARD_OF_BOOLS[9][9] = true;
+		BOARD_OF_BOOLS[4][7] = true;
+		BOARD_OF_BOOLS[4][6] = true;
+		BOARD_OF_BOOLS[4][5] = true;
+		BOARD_OF_BOOLS[10][1] = true;
+		BOARD_OF_BOOLS[10][2] = true;
+		
+	}
 
 
 
-
-	//FUNKCJA STWORZONA PO TO ABY USTAWIAC NA MACIERZY POLA ZAKAZANE DO KLIKNIECIA
+	//FUNKCJA STWORZONA PO TO ABY USTAWIAC NA MACIERZY POLA ZAKAZANE DO KLIKNIECIA 
 	void Set_To_Forbidden(int i, int j)
 	{
 		FORBIDDEN_FIELDS[i][j] = true;
@@ -190,7 +234,7 @@ public:
 
 
 
-
+	///FUNCKJA WYKRYWAJACA ROZMIAR STATKU ZNAJAC JEDEN Z JEGO POL TUTAJ M[I][J]
 	int Detect_Ship_Size(int row, int col)
 	{
 		int shipSize = 0;
@@ -226,7 +270,8 @@ public:
 
 
 
-
+	///FUNKCJA KTORA UZUPELNIA POZOSTALE POLA NA PLANSZY NA CZERWONE I ZABLOKOWANE. W KODZIE JEST ONA WYWOLANA KIEDY PODCZAS USTAWIANIA STATKOW
+	///  JUZ WSZYSTKIE STATKI ZOSTANA UZYTE 
 	void Fill_The_Board()
 	{
 		for (int i = 0; i < BOARD_SIZE; i++)
@@ -255,9 +300,9 @@ public:
 	//DWUMASZTOWIEC
 	//JEDNOMASZTOWIEC
 	//PO KOLEI
-	//NAJPIERW SZUKA CZTEROMASZTOWCA, JEZELI OKAZE SIE ZE PO KLIKNIECIU PUNKTU
+	//NAJPIERW SZUKA CZTEROMASZTOWCA, JEZELI OKAZE SIE ZE PO KLIKNIECIU PUNKTU 
 	//WYKRYTY ZOSTANIE CZTEROMASZTOWIEC TO FUNKCJA BLOKUJE POLE NA PRAWO LUB NA LEWO OD STRZELONEGO STATKU ORAZ 4-TE POLE NA LEWO LUB NA PRAWO
-	/// NA LEWO CZY NA PRAWO----- JEST TO UZALEZNIONE OD TEGO Z KTOREJ STRONY STATEK SIE ZACZYNA A Z KTOREJ KONCZY
+	/// NA LEWO CZY NA PRAWO----- JEST TO UZALEZNIONE OD TEGO Z KTOREJ STRONY STATEK SIE ZACZYNA A Z KTOREJ KONCZY 
 	void Forbide_Ends(int i, int j)
 	{
 		if (Detect_Ship_Size(i, j) == 4)
@@ -749,7 +794,7 @@ public:
 
 
 
-
+	//FUNKCJA KTORA NADAJE PARAMETRY OBIEKTOWI REROLL_BUTTON  ORAZ !!WYSWIETLA!! GO 
 	void REROLL_BUTTON(sf::RenderWindow& okno)
 	{
 
@@ -767,7 +812,7 @@ public:
 
 	}
 
-
+	//FUNKCJA KTORA OGOLNIE USTAWIA POLOZENIE ROZMIAR ORAZ !!WYSWIETLA!! PRZYCISK STARTOWY
 	void START_BUTTON_SHOW(sf::RenderWindow& okno)
 	{
 		START_BUTTON.setSize(sf::Vector2f(CELL_SIDE, CELL_SIDE));
@@ -786,7 +831,26 @@ public:
 
 
 
+
+
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -837,7 +901,7 @@ void Pokaz_Na_Ekranie(BOARD& gracz, sf::RenderWindow& okno)
 
 
 //FUNKCJA USTAWIAJACA POLE NA KLIKNIETE (OCZYWISCIE FUNKCJA DZIALA POD KONTROLA PROGRAMISTY, CZYLI PROGRAMISTA ZADBA O TO ZEBY POLE BYLO OZNACZONE JAKO KLIKNIETE
-//TYLKO WTEDY KIEDY JEST MOZLIWOSC JEGO KLIKNIECIA
+//TYLKO WTEDY KIEDY JEST MOZLIWOSC JEGO KLIKNIECIA 
 void Set_To_Clicked(BOARD& gracz, int i, int j)
 {
 	gracz.BOARD_OF_BOOLS[i][j] = 1;
@@ -969,6 +1033,21 @@ void SHIPS_OCCUR(BOARD& gracz, int i, int j)
 
 
 
+/*
+void BOT_MOVE(BOARD& gracz,int *i,int *j)
+{
+	srand(time(NULL));
+	if (gracz.BOARD_OF_BOOLS[*i][*j] == true)
+	{
+		gracz.STRIKED[*i][*j] = true;
+	}
+	else
+	{
+		*
+	}
+}
+
+*/
 
 
 int main()
@@ -993,12 +1072,22 @@ int main()
 
 	BOARD komputer(900, 100);
 
+	
+
 
 	//PODSTAWOWE OPERACJE STARTOWE DLA KAZDEJ Z PLANSZ
 	INITIATE_PLAYERS(gracz, komputer);
 
+	komputer.Set_Ships_By_Hand();
+
 	gracz.CONTINUE = false;
 
+
+	int x = rand() % 10;
+	int y = rand() % 10;
+
+	int a = rand() % 4 + 1;
+	int b = rand() % 4 + 1;
 
 	sf::Event zdarzenie, WYBOR;
 
@@ -1110,6 +1199,8 @@ int main()
 			}
 		}
 
+		srand(time(NULL));
+
 
 
 
@@ -1134,19 +1225,59 @@ int main()
 						for (int i = 0; i < 10; i++)
 						{
 							for (int j = 0; j < 10; j++)
-							{//GETGLOBALBOUNDS.CONTAINS ZWRACA WARTOSC//TRUE JEZELI DANE POLE MIESCI SIE W RAMACH INNEGO POLA
-								/*
-								if ((gracz.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (CHECK_TURN(&tura)))
+							{
+								if (tura==true)
 								{
-									// obsłuż kliknięcie na polu planszy
-									// np. zmień kolor pola na niebieski
-									gracz.MATRIX[i][j].setFillColor(sf::Color::Blue);
-									Set_To_Clicked(gracz, i, j);
-									tura = false;//TUTAJ DZIALA TO TROCHE JAK PRZELACZNIK, CZYLI JEZELI POLE ZOSTANIE KLIKNIETE TO TURA ZOSTAJE ZMIENIONA
-									//NA DRUGIEGO GRACZA I NA ODWROT
+									if (tura == true)
+									{
+										while (gracz.BOARD_OF_BOOLS[x][y] == true && gracz.IF_CLICKED[x][y]==false)
+										{
+											Sleep(1000);
+											gracz.MATRIX[x][y].setFillColor(sf::Color::Green);
+											gracz.IF_CLICKED[x][y] = true;
+											gracz.STRIKED[x][y] = 0;
+											a = rand() % 4 + 1;
+											if (a == 1)
+											{
+												x--;
+												continue;
+											}
+											if (a == 2)
+											{
+												x++;
+												continue;
+											}
+											if (a == 3)
+											{
+												y--;
+												continue;
+											}
+											if (a == 4)
+											{
+												y++;
+												continue;
+											}
+											tura = false;
 
+										}						
+
+									}
+									if (tura == true)
+									{
+										x = rand() % 10;
+										y = rand() % 10;
+										gracz.IF_CLICKED[x][y] = true;
+										gracz.MATRIX[x][y].setFillColor(sf::Color::White);
+										gracz.STRIKED[x][y] = 0;
+
+
+									}
+
+									tura = false;
 								}
-								*/
+
+
+								
 
 								if ((komputer.MATRIX[i][j].getGlobalBounds().contains(pozycja_myszy.x, pozycja_myszy.y)) && (!CHECK_TURN(&tura)))
 								{
@@ -1157,7 +1288,6 @@ int main()
 										komputer.MATRIX[i][j].setFillColor(sf::Color::Red);
 										komputer.BOARD_OF_BOOLS[i][j] = false;
 										komputer.IF_CLICKED[i][j] = true;
-										tura = true;
 
 									}
 									if (!komputer.BOARD_OF_BOOLS[i][j] && !komputer.IF_CLICKED[i][j])
@@ -1184,6 +1314,11 @@ int main()
 
 				okno.display(); //RENDER
 
+				if (!gracz.Live())
+				{
+					okno.close();
+				}
+
 			}
 		}
 
@@ -1204,4 +1339,3 @@ int main()
 
 	return 0;
 }
-
