@@ -1,6 +1,9 @@
 ﻿#include <iostream>
+#include <cstdio>
 #include <cstdlib>
 #include <ctime>
+
+using namespace std;
 
 #define WIERSZE 11
 #define KOLUMNY 11
@@ -623,9 +626,9 @@ public:
         {
             for (int j = 0; j < KOLUMNY; j++)
             {
-                std::cout << macierz[i][j] << " ";
+                cout << macierz[i][j] << " ";
             }
-            std::cout << std::endl;
+            cout << endl;
         }
     }
 
@@ -845,26 +848,26 @@ public:
 int main(void)
 {
 
-    std::cout << "GRA W STATKI\n\n";
-    std::cout << "W gre gra jednoczesnie jeden gracz i komputer\n";
-    std::cout << "Gracz wybiera pole, w ktore chce strzelic\n";
-    std::cout << "Jesli trafi, strzela jeszcze raz\n";
-    std::cout << "Jesli nie trafi, kolejke dostaje komputer\n";
-    std::cout << "Gra konczy sie, gdy ktorys z graczy zatopi wszystkie statki drugiego\n\n";
+    cout << "GRA W STATKI\n\n";
+    cout << "W gre gra jednoczesnie jeden gracz i komputer\n";
+    cout << "Gracz wybiera pole, w ktore chce strzelic\n";
+    cout << "Jesli trafi, strzela jeszcze raz\n";
+    cout << "Jesli nie trafi, kolejke dostaje komputer\n";
+    cout << "Gra konczy sie, gdy ktorys z graczy zatopi wszystkie statki drugiego\n\n";
 
-    std::cout << "Statki na planszy:\n";
-    std::cout << " -jeden czteromasztowiec\n";
-    std::cout << " -dwa trojmasztowce\n";
-    std::cout << " -trzy dwumasztowce\n";
-    std::cout << " -cztery jednomasztowce\n\n";
+    cout << "Statki na planszy:\n";
+    cout << " -jeden czteromasztowiec\n";
+    cout << " -dwa trojmasztowce\n";
+    cout << " -trzy dwumasztowce\n";
+    cout << " -cztery jednomasztowce\n\n";
 
-    std::cout << "Oznaczenia na planszy:\n";
-    std::cout << " O - puste pole\n";
-    std::cout << " * - statek\n";
-    std::cout << " x - trafiony\n";
-    std::cout << " $ - pudlo\n\n";
+    cout << "Oznaczenia na planszy:\n";
+    cout << " O - puste pole\n";
+    cout << " * - statek\n";
+    cout << " x - trafiony\n";
+    cout << " $ - pudlo\n\n";
 
-    std::cout << "Skoro znasz juz zasady, naciscij enter, aby kontunuowac:\n";
+    cout << "Skoro znasz juz zasady, naciscij enter, aby kontunuowac:\n";
 
     getchar();
 
@@ -882,9 +885,9 @@ int main(void)
     plansza_gracza.ustaw_statki_losowo();
 
     // wypisanie plansz
-    std::cout << "Plansza przeciwnika:\n";
+    cout << "Plansza przeciwnika:\n";
     plansza_przeciwnika_widoczna.wypisz_plansze();
-    std::cout << "\nTwoja plansza:\n";
+    cout << "\nTwoja plansza:\n";
     plansza_gracza.wypisz_plansze();
 
     // graj dopoki nie zbijesz wszystkich statkow przeciwnika
@@ -894,20 +897,20 @@ int main(void)
         char litera = 0;
         int liczba = 0;
 
-        std::cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+        cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
 
         // test na poprawnosc wprowadzonych wspolrzednych
         bool right_input = false;
         do
         {
-            std::cin >> litera;
-            std::cin >> liczba;
-            if (std::cin.fail())
+            cin >> litera;
+            cin >> liczba;
+            if (cin.fail())
             {
-                std::cout << "\nPodano nieprawidlowa wartosc\n";
-                std::cout << "Podaj wspolrzedne punktu (np. a1):\n";
-                std::cin.clear();
-                std::cin.ignore(1000, '\n');
+                cout << "\nPodano nieprawidlowa wartosc\n";
+                cout << "Podaj wspolrzedne punktu (np. a1):\n";
+                cin.clear();
+                cin.ignore(1000, '\n');
                 right_input = false;
             }
             else
@@ -919,7 +922,7 @@ int main(void)
         // jesli uzytkownik poda kolejny raz to samo pole
         if (plansza_przeciwnika_ukryta.czy_ponownie_to_samo_pole(litera, liczba))
         {
-            std::cout << "\nPodawales juz to pole, podaj inne!\n";
+            cout << "\nPodawales juz to pole, podaj inne!\n";
             continue;
         }
 
@@ -934,17 +937,17 @@ int main(void)
             plansza_przeciwnika_widoczna.przegraj_gre();
 
             // wypisz po strzale
-            std::cout << "Plansza przeciwnika:\n";
+            cout << "Plansza przeciwnika:\n";
             plansza_przeciwnika_widoczna.wypisz_plansze();
-            std::cout << "\nTwoja plansza:\n";
+            cout << "\nTwoja plansza:\n";
             plansza_gracza.wypisz_plansze();
-            std::cout << std::endl;
+            cout << endl;
 
-            std::cout << "Trafiony\n";
+            cout << "Trafiony\n";
 
             if (!plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
             {
-                std::cout << "Strzelasz ponownie\n";
+                cout << "Strzelasz ponownie\n";
             }
         }
         // jesli nie trafisz w statek
@@ -961,14 +964,14 @@ int main(void)
             plansza_gracza.komputer_losuje_strzal();
 
             // wypisz po strzale
-            std::cout << "Plansza przeciwnika:\n";
+            cout << "Plansza przeciwnika:\n";
             plansza_przeciwnika_widoczna.wypisz_plansze();
-            std::cout << "\nTwoja plansza:\n";
+            cout << "\nTwoja plansza:\n";
             plansza_gracza.wypisz_plansze();
-            std::cout << std::endl;
+            cout << endl;
 
-            std::cout << "Nietrafiony\n";
-            std::cout << "Przeciwnik wykonal swoj ruch\n";
+            cout << "Nietrafiony\n";
+            cout << "Przeciwnik wykonal swoj ruch\n";
 
             // jesli komputer trafi wszystkie statki
             if (plansza_gracza.czy_wszystkie_trafione())
@@ -981,15 +984,15 @@ int main(void)
     // sprawdzenie kto wygral i wypisanie na ekran
     if (plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
     {
-        std::cout << "\n\n\nTRAFILES WSZYSTKIE STATKI, WYGRYWASZ!!!\n";
+        cout << "\n\n\nTRAFILES WSZYSTKIE STATKI, WYGRYWASZ!!!\n";
     }
     else if (plansza_gracza.czy_wszystkie_trafione())
     {
-        std::cout << "\n\n\nKOMPUTER WYGRYWA!!!\n";
+        cout << "\n\n\nKOMPUTER WYGRYWA!!!\n";
     }
 
     // zeby okno konsoli nie zamknelo sie od razu
-    std::cout << "\n\n\nNacisnij enter, zeby zakonczyc program:\n";
+    cout << "\n\n\nNacisnij enter, zeby zakonczyc program:\n";
     getchar();
 
     return 0;
