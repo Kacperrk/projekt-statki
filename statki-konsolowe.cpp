@@ -25,7 +25,7 @@ private:
 
     char macierz[WIERSZE][KOLUMNY];
 
-    // ustawia wszystkie pola planszy na znak 'O'
+// ustawia wszystkie pola planszy na znak 'O'
     void czyszczenie_planszy(void)
     {
         for (int i = 0; i < WIERSZE; i++)
@@ -37,7 +37,7 @@ private:
         }
     }
 
-    // dodaje do planszy oznaczenia kolumn i wierszy
+// dodaje do planszy oznaczenia kolumn i wierszy
     void oznaczenia_planszy(void)
     {
         macierz[0][0] = ' ';
@@ -58,7 +58,7 @@ private:
         }
     }
 
-    // funkcja sprawdza czy na planszy jest odpowiednia liczba statkow
+// funkcja sprawdza czy na planszy jest odpowiednia liczba statkow
     bool czy_statkow_jest_20(void)
     {
         int licznik = 0;
@@ -79,7 +79,7 @@ private:
         return false;
     }
 
-    // ustawienie czteromasztowca poziomo
+// ustawienie czteromasztowca poziomo
     void czteromasztowce_poziomo(void)
     {
         // losowanie pierwszego od lewej elementu statku czteromasztowego poziomego
@@ -606,20 +606,20 @@ private:
 
 public:
 
-    // konstruktor
+// konstruktor
     Plansza(void)
     {
         czyszczenie_planszy();
         oznaczenia_planszy();
     }
 
-    // destruktor
+// destruktor
     ~Plansza(void)
     {
 
     }
 
-    // wypisuje plansze na ekranie
+// wypisuje plansze na ekranie
     void wypisz_plansze(void)
     {
         for (int i = 0; i < WIERSZE; i++)
@@ -632,7 +632,7 @@ public:
         }
     }
 
-    // spawdza czy na polu o podanych wspolrzednych jest statek
+// spawdza czy na polu o podanych wspolrzednych jest statek
     bool czy_trafiony(char litera, int liczba)
     {
         int wiersze = 0;
@@ -663,7 +663,7 @@ public:
         return false;
     }
 
-    // sprawdza czy gracz nie wpisal tego samego pola 2 razy
+// sprawdza czy gracz nie wpisal tego samego pola 2 razy
     bool czy_ponownie_to_samo_pole(char litera, int liczba)
     {
         int wiersze = 0;
@@ -685,7 +685,7 @@ public:
         return false;
     }
 
-    // sprawdza czy na planszy nie zostal zaden nietrafiony statek
+// sprawdza czy na planszy nie zostal zaden nietrafiony statek
     bool czy_wszystkie_trafione(void)
     {
         for (int i = 1; i < WIERSZE; i++)
@@ -701,7 +701,7 @@ public:
         return true;
     }
 
-    // zamienia wszystkie statki na pola trafione
+// zamienia wszystkie statki na pola trafione
     void wygraj_gre(void)
     {
         for (int i = 1; i < WIERSZE; i++)
@@ -716,7 +716,7 @@ public:
         }
     }
 
-    // zamienia wszystkie statki na pola puste
+// zamienia wszystkie statki na pola puste
     void przegraj_gre(void)
     {
         for (int i = 1; i < WIERSZE; i++)
@@ -731,7 +731,7 @@ public:
         }
     }
 
-    // funkcja ustawiajaca statki losowo
+// funkcja ustawiajaca statki losowo
     void ustaw_statki_losowo(void)
     {
         // sprawdzanie czy wszystkie statki sa na planszy
@@ -784,7 +784,7 @@ public:
         }
     }
 
-    // ruch komputera
+// ruch komputera
     void komputer_losuje_strzal(void)
     {
         int wspolrzedna_pionowa = 0;
@@ -828,7 +828,7 @@ public:
 
             // jesli trafiono juz w trafiony statek
             if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == 'x' ||
-                macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '$')
+                    macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '$')
             {
                 // strzel jeszcze raz
                 continue;
@@ -841,6 +841,45 @@ public:
                 break;
             }
         }
+    }
+
+// sprawdza czy wokol nie pozostaly nietrafione statki
+    bool czy_zatopiony(char litera, int liczba)
+    {
+        int wiersze = 0;
+
+        // zamienia podane litery od 'A' 'a' do 'J' 'j' na numer wiersza
+        for (int i = 0; i < 10; i++)
+        {
+            if (litera == ('A' + i) || litera == ('a' + i))
+            {
+                wiersze = (1 + i);
+            }
+        }
+
+        // jesli wokol trafionego statku jest inny statek
+        if (macierz[wiersze - 1][liczba + 1] == '*')
+        {
+            // znaczy ze nie jest zatopiony
+            return false;
+        }
+
+        if (macierz[wiersze][liczba + 1 - 1] == '*')
+        {
+            return false;
+        }
+
+        if (macierz[wiersze + 1][liczba + 1] == '*')
+        {
+            return false;
+        }
+
+        if (macierz[wiersze][liczba + 1 + 1] == '*')
+        {
+            return false;
+        }
+
+        return true;
     }
 
 };
@@ -917,7 +956,8 @@ int main(void)
             {
                 right_input = true;
             }
-        } while (!right_input);
+        }
+        while (!right_input);
 
         // jesli uzytkownik poda kolejny raz to samo pole
         if (plansza_przeciwnika_ukryta.czy_ponownie_to_samo_pole(litera, liczba))
@@ -939,11 +979,36 @@ int main(void)
             // wypisz po strzale
             cout << "Plansza przeciwnika:\n";
             plansza_przeciwnika_widoczna.wypisz_plansze();
+
+
+// todo 1 begin
+
+            cout << "Plansza przeciwnika ukryta:\n";
+            plansza_przeciwnika_ukryta.wypisz_plansze();
+
+// todo 1 end
+
+
+
+
+
+
+
+
+
             cout << "\nTwoja plansza:\n";
             plansza_gracza.wypisz_plansze();
             cout << endl;
 
-            cout << "Trafiony\n";
+            if (plansza_przeciwnika_ukryta.czy_zatopiony(litera, liczba))
+            {
+                cout << "Trafiony zatopiony\n";
+            }
+
+            if (!plansza_przeciwnika_ukryta.czy_zatopiony(litera, liczba))
+            {
+                cout << "Trafiony\n";
+            }
 
             if (!plansza_przeciwnika_ukryta.czy_wszystkie_trafione())
             {
@@ -966,6 +1031,24 @@ int main(void)
             // wypisz po strzale
             cout << "Plansza przeciwnika:\n";
             plansza_przeciwnika_widoczna.wypisz_plansze();
+
+
+
+
+
+
+            // todo 2 begin
+
+            cout << "Plansza przeciwnika ukryta:\n";
+            plansza_przeciwnika_ukryta.wypisz_plansze();
+
+            // todo 2 end
+
+
+
+
+
+
             cout << "\nTwoja plansza:\n";
             plansza_gracza.wypisz_plansze();
             cout << endl;
