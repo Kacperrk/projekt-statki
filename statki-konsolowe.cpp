@@ -882,6 +882,912 @@ bool czy_zatopiony(char litera, int liczba)
 	return true;
 }
 
+void ustaw_sam_czteromasztowiec_poziomo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od lewej elementem statku czteromasztowego poziomego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'j')\n";
+	cout << "\n(Cyfry od '0' do '6')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	// nie trzeba sprawdzac poprawnosci wprowadzonych liter i cyfr bo to graficzna wersja
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = liczba + 1;
+
+	// zamienia podane litery od 'A' 'a' do 'J' 'j' na numer wiersza
+	for (int i = 0; i < 10; i++)
+	{
+		if (litera == ('A' + i) || litera == ('a' + i))
+		{
+			wspolrzedna_pionowa = (1 + i);
+		}
+	}
+
+	// narysowanie calego czteromasztowca poziomo
+	for (int i = 0; i < 4; i++)
+	{
+		macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + i] = '*';
+	}
+}
+
+void ustaw_sam_czteromasztowiec_pionowo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od gory elementem statku czteromasztowego pionowego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'g')\n";
+	cout << "\n(Cyfry od '0' do '9')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = liczba + 1;
+
+	for (int i = 0; i < 10; i++)
+	{
+		if (litera == ('A' + i) || litera == ('a' + i))
+		{
+			wspolrzedna_pionowa = (1 + i);
+		}
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		macierz[wspolrzedna_pionowa + i][wspolrzedna_pozioma] = '*';
+	}
+}
+
+void ustaw_sam_trojmasztowiec_poziomo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od lewej elementem statku trojmasztowego poziomego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'j')\n";
+	cout << "\n(Cyfry od '0' do '7')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
+
+	bool trojmasztowiec = false;
+	bool czy_blad = false;
+
+	// dopoki nie zostanie ustawiony w poprawnym miejscu
+	while (!trojmasztowiec)
+	{
+		if (czy_blad)
+		{
+			// powiedz userowi zeby wybral inne pole bo tu jest statek
+			cout << "Na tym polu jest juz statek, wybierz inne!\n";
+			cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+			cout << "\n(Litery od 'a' do 'j')\n";
+			cout << "\n(Cyfry od '0' do '7')\n";
+
+			cin >> litera;
+			cin >> liczba;
+		}
+
+		czy_blad = false;
+
+		wspolrzedna_pionowa = 0;
+		wspolrzedna_pozioma = liczba + 1;
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (litera == ('A' + i) || litera == ('a' + i))
+			{
+				wspolrzedna_pionowa = (1 + i);
+			}
+		}
+
+		// jesli na tym miejscu lub w poblizu jest juz statek
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			// zacznij petle od poczatku
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 2] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 3] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 2] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 3] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 2] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 3] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		trojmasztowiec = true;
+	}
+
+	if (trojmasztowiec)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + i] = '*';
+		}
+	}
+}
+
+void ustaw_sam_trojmasztowiec_pionowo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od gory elementem statku trojmasztowego pionowego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'h')\n";
+	cout << "\n(Cyfry od '0' do '9')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
+
+	bool trojmasztowiec = false;
+	bool czy_blad = false;
+
+	while (!trojmasztowiec)
+	{
+		if (czy_blad)
+		{
+			cout << "Na tym polu jest juz statek, wybierz inne!\n";
+			cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+			cout << "\n(Litery od 'a' do 'h')\n";
+			cout << "\n(Cyfry od '0' do '9')\n";
+
+			cin >> litera;
+			cin >> liczba;
+		}
+
+		czy_blad = false;
+
+		wspolrzedna_pionowa = 0;
+		wspolrzedna_pozioma = liczba + 1;
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (litera == ('A' + i) || litera == ('a' + i))
+			{
+				wspolrzedna_pionowa = (1 + i);
+			}
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 3][wspolrzedna_pozioma - 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 3][wspolrzedna_pozioma + 0] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 3][wspolrzedna_pozioma + 1] == '*')
+		{
+			trojmasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		trojmasztowiec = true;
+	}
+
+	if (trojmasztowiec)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			macierz[wspolrzedna_pionowa + i][wspolrzedna_pozioma] = '*';
+		}
+	}
+}
+
+void ustaw_sam_dwumasztowiec_poziomo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od lewej elementem statku dwumasztowego poziomego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'j')\n";
+	cout << "\n(Cyfry od '0' do '8')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
+
+	bool dwumasztowiec = false;
+	bool czy_blad = false;
+
+	while (!dwumasztowiec)
+	{
+		if (czy_blad)
+		{
+			cout << "Na tym polu jest juz statek, wybierz inne!\n";
+			cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+			cout << "\n(Litery od 'a' do 'j')\n";
+			cout << "\n(Cyfry od '0' do '8')\n";
+
+			cin >> litera;
+			cin >> liczba;
+		}
+
+		czy_blad = false;
+
+		wspolrzedna_pionowa = 0;
+		wspolrzedna_pozioma = liczba + 1;
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (litera == ('A' + i) || litera == ('a' + i))
+			{
+				wspolrzedna_pionowa = (1 + i);
+			}
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 2] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 2] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 2] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		dwumasztowiec = true;
+
+	}
+
+	if (dwumasztowiec)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + i] = '*';
+		}
+	}
+}
+
+void ustaw_sam_dwumasztowiec_pionowo(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie pierwszym od gory elementem statku dwumasztowego pionowego:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'j')\n";
+	cout << "\n(Cyfry od '0' do '8')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
+
+	bool dwumasztowiec = false;
+	bool czy_blad = false;
+
+	while (!dwumasztowiec)
+	{
+
+		if (czy_blad)
+		{
+			cout << "Na tym polu jest juz statek, wybierz inne!\n";
+			cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+			cout << "\n(Litery od 'a' do 'h')\n";
+			cout << "\n(Cyfry od '0' do '9')\n";
+
+			cin >> litera;
+			cin >> liczba;
+		}
+
+		czy_blad = false;
+
+		wspolrzedna_pionowa = 0;
+		wspolrzedna_pozioma = liczba + 1;
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (litera == ('A' + i) || litera == ('a' + i))
+			{
+				wspolrzedna_pionowa = (1 + i);
+			}
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma - 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma + 0] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 2][wspolrzedna_pozioma + 1] == '*')
+		{
+			dwumasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		dwumasztowiec = true;
+
+	}
+
+	if (dwumasztowiec)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			macierz[wspolrzedna_pionowa + i][wspolrzedna_pozioma] = '*';
+		}
+	}
+}
+
+void ustaw_sam_jednomasztowiec(void)
+{
+	char litera = 0;
+	int liczba = 0;
+
+	cout << "Podaj pole, ktore bedzie statkiem jednomasztowym:\n";
+	cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+	cout << "\n(Litery od 'a' do 'j')\n";
+	cout << "\n(Cyfry od '0' do '9')\n";
+
+	cin >> litera;
+	cin >> liczba;
+
+	int wspolrzedna_pionowa = 0;
+	int wspolrzedna_pozioma = 0;
+
+	bool jednomasztowiec = false;
+	bool czy_blad = false;
+
+	while (!jednomasztowiec)
+	{
+		if (czy_blad)
+		{
+			cout << "Na tym polu jest juz statek, wybierz inne!\n";
+			cout << "\nPodaj wspolrzedne punktu (np. a1):\n";
+			cout << "\n(Litery od 'a' do 'j')\n";
+			cout << "\n(Cyfry od '0' do '9')\n";
+
+			cin >> litera;
+			cin >> liczba;
+		}
+
+		czy_blad = false;
+
+		wspolrzedna_pionowa = 0;
+		wspolrzedna_pozioma = liczba + 1;
+
+		for (int i = 0; i < 10; i++)
+		{
+			if (litera == ('A' + i) || litera == ('a' + i))
+			{
+				wspolrzedna_pionowa = (1 + i);
+			}
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma - 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa][wspolrzedna_pozioma + 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa - 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma - 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 0] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		if (macierz[wspolrzedna_pionowa + 1][wspolrzedna_pozioma + 1] == '*')
+		{
+			jednomasztowiec = false;
+			czy_blad = true;
+			continue;
+		}
+
+		jednomasztowiec = true;
+
+	}
+
+	if (jednomasztowiec)
+	{
+		macierz[wspolrzedna_pionowa][wspolrzedna_pozioma] = '*';
+	}
+}
+
+// funkcja ustawiajaca statki wedlug wskazan gracza
+void gracz_ustawia_statki(void)
+{
+	czysc_ekran();
+	cout << "Jak ustawic jedyny czteromasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	int ustawienie_czteromasztowca = 0;
+	cin >> ustawienie_czteromasztowca;
+	if (ustawienie_czteromasztowca == 1)
+	{
+		ustaw_sam_czteromasztowiec_poziomo();
+	}
+	else if (ustawienie_czteromasztowca == 2)
+	{
+		ustaw_sam_czteromasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Jak ustawic pierwszy z dwoch trojmasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	int ustawienie_trojmasztowca = 0;
+	cin >> ustawienie_trojmasztowca;
+	if (ustawienie_trojmasztowca == 1)
+	{
+		ustaw_sam_trojmasztowiec_poziomo();
+	}
+	else if (ustawienie_trojmasztowca == 2)
+	{
+		ustaw_sam_trojmasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Jak ustawic drugi z dwoch trojmasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	ustawienie_trojmasztowca = 0;
+	cin >> ustawienie_trojmasztowca;
+	if (ustawienie_trojmasztowca == 1)
+	{
+		ustaw_sam_trojmasztowiec_poziomo();
+	}
+	else if (ustawienie_trojmasztowca == 2)
+	{
+		ustaw_sam_trojmasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Jak ustawic pierwszy z trzech dwumasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	int ustawienie_dwumasztowca = 0;
+	cin >> ustawienie_dwumasztowca;
+	if (ustawienie_dwumasztowca == 1)
+	{
+		ustaw_sam_dwumasztowiec_poziomo();
+	}
+	else if (ustawienie_dwumasztowca == 2)
+	{
+		ustaw_sam_dwumasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Jak ustawic drugi z trzech dwumasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	ustawienie_dwumasztowca = 0;
+	cin >> ustawienie_dwumasztowca;
+	if (ustawienie_dwumasztowca == 1)
+	{
+		ustaw_sam_dwumasztowiec_poziomo();
+	}
+	else if (ustawienie_dwumasztowca == 2)
+	{
+		ustaw_sam_dwumasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Jak ustawic trzeci z trzech dwumasztowiec?\n";
+	cout << "1) Poziomo\n";
+	cout << "2) Pionowo\n";
+	ustawienie_dwumasztowca = 0;
+	cin >> ustawienie_dwumasztowca;
+	if (ustawienie_dwumasztowca == 1)
+	{
+		ustaw_sam_dwumasztowiec_poziomo();
+	}
+	else if (ustawienie_dwumasztowca == 2)
+	{
+		ustaw_sam_dwumasztowiec_pionowo();
+	}
+
+	czysc_ekran();
+	cout << "Ustawiamy pierwszy z czterech jednomasztowiec:\n";
+	ustaw_sam_jednomasztowiec();
+
+	czysc_ekran();
+	cout << "Ustawiamy drugi z czterech jednomasztowiec:\n";
+	ustaw_sam_jednomasztowiec();
+
+	czysc_ekran();
+	cout << "Ustawiamy trzeci z czterech jednomasztowiec:\n";
+	ustaw_sam_jednomasztowiec();
+
+	czysc_ekran();
+	cout << "Ustawiamy czwarty z czterech jednomasztowiec:\n";
+	ustaw_sam_jednomasztowiec();
+
+	czysc_ekran();
+}
+
 };
 
 int main(void)
@@ -921,7 +1827,22 @@ int main(void)
 
 	// losowanie statkow na planszach
 	plansza_przeciwnika_ukryta.ustaw_statki_losowo();
-	plansza_gracza.ustaw_statki_losowo();
+
+	cout << "Wybierz, jak maja byc ustawione statki:\n";
+	cout << "1) Losowo\n";
+	cout << "2) Sam ustawiam\n";
+
+	int wybor_ustawienia_statkow = 0;
+	cin >> wybor_ustawienia_statkow;
+
+	if (wybor_ustawienia_statkow == 1)
+	{
+		plansza_gracza.ustaw_statki_losowo();
+	}
+	else if (wybor_ustawienia_statkow == 2)
+	{
+		plansza_gracza.gracz_ustawia_statki();
+	}
 
 	// wypisanie plansz
 	cout << "Plansza przeciwnika:\n";
@@ -979,23 +1900,11 @@ int main(void)
 			cout << "Plansza przeciwnika:\n";
 			plansza_przeciwnika_widoczna.wypisz_plansze();
 
-
-// todo 1 begin
+// todo 1
 #if 1
-
 			cout << "Plansza przeciwnika ukryta:\n";
 			plansza_przeciwnika_ukryta.wypisz_plansze();
-
 #endif
-// todo 1 end
-
-
-
-
-
-
-
-
 
 			cout << "\nTwoja plansza:\n";
 			plansza_gracza.wypisz_plansze();
@@ -1033,24 +1942,11 @@ int main(void)
 			cout << "Plansza przeciwnika:\n";
 			plansza_przeciwnika_widoczna.wypisz_plansze();
 
-
-
-
-
-
-// todo 2 begin
+// todo 2
 #if 1
-
 			cout << "Plansza przeciwnika ukryta:\n";
 			plansza_przeciwnika_ukryta.wypisz_plansze();
-
 #endif
-// todo 2 end
-
-
-
-
-
 
 			cout << "\nTwoja plansza:\n";
 			plansza_gracza.wypisz_plansze();
@@ -1080,6 +1976,8 @@ int main(void)
 	// zeby okno konsoli nie zamknelo sie od razu
 	cout << "\n\n\nNacisnij enter, zeby zakonczyc program:\n";
 	getchar();
+
+// here
 
 	return 0;
 }
